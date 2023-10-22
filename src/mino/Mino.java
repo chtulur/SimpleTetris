@@ -2,8 +2,10 @@ package mino;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 
 import main.PlayManager;
+import main.GamePanel;
 import main.KeyHandler;
 
 public class Mino {
@@ -11,6 +13,8 @@ public class Mino {
 	public Block[] blocks = new Block[4];
 	public Block[] tempB = new Block[4];
 	int autoDropCounter = 0;
+	int currentRotation = 0;
+	boolean isBottomReached = false;
 	
 	public void create(Color color) {
 		
@@ -19,26 +23,27 @@ public class Mino {
 			tempB[i] =new Block(color);
 		}
 	}
-
 	
-	public void setXY(int x, int y) {
-		
-	}
-	
-	public void updateXY(int direction) {
-		
-	}
+	public void setXY(int x, int y) {}
+	public void updateXY(int direction) {}
+	public void rotate() {}
 	
 	public void update() {
+		isBottomReached = Arrays.stream(blocks)
+				.anyMatch(b -> b.y >= PlayManager.HEIGHT);
 		
 		//Movement
 		if (KeyHandler.upPressed) {
-			
+			rotate();
+			KeyHandler.upPressed = false;
 		}
 		
-		if (KeyHandler.downPressed) {
-			for (Block b: blocks) {
-				b.y += Block.SIZE;
+		if (KeyHandler.downPressed && !isBottomReached) {
+			
+			if (!isBottomReached) {
+				for (Block b: blocks) {
+					b.y += Block.SIZE;
+				}
 			}
 			
 			//reset auto-counter
@@ -66,12 +71,13 @@ public class Mino {
 		
 		autoDropCounter++; //increases every frame
 		
-		if (autoDropCounter == PlayManager.dropInterval) {
-			
+		//auto-drop
+		if (autoDropCounter == PlayManager.dropInterval && !isBottomReached) {
+		
 			for (Block b: blocks) {
 				b.y += Block.SIZE;
 			}
-			
+				
 			autoDropCounter = 0;
 		}
 	}
