@@ -5,16 +5,15 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 
 import main.PlayManager;
-import main.GamePanel;
 import main.KeyHandler;
 
 public class Mino {
 	
 	public Block[] blocks = new Block[4];
 	public Block[] tempB = new Block[4];
-	int autoDropCounter = 0;
-	int currentRotation = 0;
-	boolean isBottomReached = false;
+	protected int autoDropCounter = 0;
+	protected int currentRotation = 0;
+	protected boolean isBottomReached = false;
 	
 	public void create(Color color) {
 		
@@ -29,8 +28,8 @@ public class Mino {
 	public void rotate() {}
 	
 	public void update() {
-		isBottomReached = Arrays.stream(blocks)
-				.anyMatch(b -> b.y >= PlayManager.HEIGHT);
+		
+		isBottomReached = isBottomReached(blocks);
 		
 		//Movement
 		if (KeyHandler.upPressed) {
@@ -41,6 +40,7 @@ public class Mino {
 		if (KeyHandler.downPressed && !isBottomReached) {
 			
 			if (!isBottomReached) {
+				
 				for (Block b: blocks) {
 					b.y += Block.SIZE;
 				}
@@ -53,6 +53,7 @@ public class Mino {
 		}
 		
 		if (KeyHandler.leftPressed) {
+			
 			for (Block b: blocks) {
 				b.x -= Block.SIZE;
 			}
@@ -62,6 +63,7 @@ public class Mino {
 		}
 		
 		if (KeyHandler.rightPressed) {
+			
 			for (Block b: blocks) {
 				b.x += Block.SIZE;
 			}
@@ -90,5 +92,11 @@ public class Mino {
 		g2.fillRect(blocks[1].x + margin, blocks[1].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
 		g2.fillRect(blocks[2].x + margin, blocks[2].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
 		g2.fillRect(blocks[3].x + margin, blocks[3].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
+	}
+	
+	protected boolean isBottomReached(Block[] blocks) {
+		
+		return Arrays.stream(blocks)
+					 .anyMatch(b -> b.y >= PlayManager.HEIGHT);
 	}
 }
