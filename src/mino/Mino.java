@@ -13,7 +13,7 @@ public class Mino {
 	public Block[] tempB = new Block[4];
 	protected int autoDropCounter = 0;
 	protected int currentRotation = 0;
-	protected boolean isBottomReached = false;
+	protected boolean isBottomReached, isLeftWallReached, isRightWallReached = false;
 	
 	public void create(Color color) {
 		
@@ -30,6 +30,7 @@ public class Mino {
 	public void update() {
 		
 		isBottomReached = isBottomReached(blocks);
+		isRightWallReached = isRightWallReached(blocks);
 		
 		//Movement
 		if (KeyHandler.upPressed) {
@@ -62,7 +63,7 @@ public class Mino {
 			
 		}
 		
-		if (KeyHandler.rightPressed) {
+		if (KeyHandler.rightPressed && !isRightWallReached) {
 			
 			for (Block b: blocks) {
 				b.x += Block.SIZE;
@@ -92,6 +93,16 @@ public class Mino {
 		g2.fillRect(blocks[1].x + margin, blocks[1].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
 		g2.fillRect(blocks[2].x + margin, blocks[2].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
 		g2.fillRect(blocks[3].x + margin, blocks[3].y + margin, Block.SIZE - (margin * 2), Block.SIZE - (margin * 2));
+	}
+	
+	protected boolean collision() {
+		return false;
+	}
+	
+	protected boolean isRightWallReached(Block[] blocks) {
+		
+		return Arrays.stream(blocks)
+					 .anyMatch(b -> b.x >= PlayManager.WIDTH);
 	}
 	
 	protected boolean isBottomReached(Block[] blocks) {
